@@ -13,7 +13,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::query()->paginate(1);
+        $products = Product::all();
         return view('product.index', compact(
             'products'
         ));
@@ -35,8 +35,26 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
+        $data = $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'quantity' => 'required',
+           
+            'price' => 'required',
+        ]);
+    
+        // Save product
+        $product = new Product();
+        $product->name = $data['name'];
+        $product->description = $data['description'];
+        $product->quantity = $data['quantity'];
+        $product->image = $request['image'];
+        $product->price = $data['price'];
+        $product->save();
+    
+        return redirect()->route('Product.index')->with('success', 'Product created successfully!');
     }
+    
 
     /**
      * Display the specified resource.

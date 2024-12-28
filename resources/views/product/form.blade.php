@@ -16,6 +16,13 @@
             <textarea id="description-input" name="description" rows="4"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none"></textarea>
         </div>
+        <div class="mb-6">
+            <label for="price-input" class="block mb-2 text-sm font-medium text-gray-700">Quantity</label>
+            <input type="number" id="price-input" name="quantity" step="0.01" min="0"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none"
+                placeholder="0.00">
+        </div>
+
 
         <!-- Image File Input -->
         <div class="mb-6">

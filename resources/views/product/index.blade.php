@@ -62,6 +62,7 @@
             </tbody>
         </table>
     </div>
+  
 
     <!-- Pagination (Optional) -->
     <div class="mt-4 flex justify-between">
