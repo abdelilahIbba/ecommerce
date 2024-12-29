@@ -35,26 +35,38 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'quantity' => 'required',
-           
-            'price' => 'required',
+        $formFields = $request->validate([
+            'name' => 'required|min:5',
+            'description' => 'required|min:5',
+            'quantity' => 'required|numeric',
+            'image' => 'required|image',
+            'price' => 'required|numeric',
         ]);
-    
+        if ($request->hasFile('image')) {
+            $formFields['image'] = $request->file('image')->store('product', 'public');
+        }
+        Product::create($formFields);
+        // return to_route('Product.index')->with('success', 'Product created successfully');
+        // $data = $request->validate([
+        //     'name' => 'required|min:5',
+        //     'description' => 'required|min:5',
+        //     'quantity' => 'required|numeric',
+        //        'image' => 'required|image',
+        //     'price' => 'required|numeric',
+        // ]);
+
         // Save product
-        $product = new Product();
-        $product->name = $data['name'];
-        $product->description = $data['description'];
-        $product->quantity = $data['quantity'];
-        $product->image = $request['image'];
-        $product->price = $data['price'];
-        $product->save();
-    
+        // $product = new Product();
+        // $product->name = $data['name'];
+        // $product->description = $data['description'];
+        // $product->quantity = $data['quantity'];
+        // $product->image = $request['image'];
+        // $product->price = $data['price'];
+        // $product->save();
+
         return redirect()->route('Product.index')->with('success', 'Product created successfully!');
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -67,10 +79,12 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit($id)
     {
-        //
+        $product = Product::findOrFail($id);
+        return view('products.edit', compact('product'));
     }
+    
 
     /**
      * Update the specified resource in storage.
