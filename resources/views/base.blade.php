@@ -11,8 +11,8 @@
 
 <body>
     @if ($errors->any())
-        <div class="alert alert-danger" role="alert">
-            <strong>Errors</strong>
+        <div class="bg-red-100 text-red-700 border border-red-400 rounded p-4 mb-4">
+            <strong class="font-bold">Errors</strong>
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -22,6 +22,7 @@
     @endif
     <div class="container">
         @yield('content')
+        
     </div>
 </body>
 

@@ -32,10 +32,19 @@
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-800">{{ number_format($product->price, 2) }} MAD</td>
                         <td class="px-6 py-4 text-sm text-gray-800">
-                            <button
-                                class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 focus:outline-none">Edit</button>
-                            <button
-                                class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none ml-2">Delete</button>
+                            <a href="{{ route('Product.edit', $product) }}"
+                                class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 focus:outline-none">
+                                Edit
+                            </a>
+
+                            <form method="POST" action="{{ route('Product.destroy', $product) }}">
+                                @csrf
+                                @method('DELETE')
+                                <input type="submit" value="Delete"
+                                    class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none ml-2">
+                            </form>
+
+
                         </td>
                     </tr>
                 @empty

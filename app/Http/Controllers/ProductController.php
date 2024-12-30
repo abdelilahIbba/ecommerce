@@ -25,7 +25,7 @@ class ProductController extends Controller
     public function create()
     {
         $product = new Product();
-        return view('product.create', compact(
+        return view('product.form', compact(
             'product'
         ));
     }
@@ -79,10 +79,10 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(product $product)
     {
-        $product = Product::findOrFail($id);
-        return view('products.edit', compact('product'));
+        $product = new Product();
+        return view('product.edit', compact('product'));
     }
     
 
@@ -97,8 +97,21 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
-    {
-        //
+    public function destroy($id)
+{
+    // Find the product by ID
+    $product = Product::find($id);
+
+    // Check if the product exists
+    if (!$product) {
+        // If the product doesn't exist, redirect with an error message
+        return redirect()->route('Product.index')->with('error', 'Product not found.');
     }
+
+    // Attempt to delete the product
+    $product->delete();
+
+    // Redirect with success message after successful deletion
+    return redirect()->route('Product.index')->with('success', 'Product deleted successfully.');
+}
 }
