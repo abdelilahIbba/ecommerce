@@ -1,12 +1,9 @@
-{{-- @extends('base')
-
-
-
+@extends('base')
 
 @section('content')
-<form action="{{ isset($product) ? route('Product.update', $product) : route('Product.store') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ isset($product) ? route('Product.update', $product->id) : route('Product.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
-        @if ($isUpdate)
+        @if ($product)
             @method('PUT')
         @endif
         <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg">
@@ -57,9 +54,10 @@
 
             <!-- Submit Button -->
             <div class="mt-4">
-                <input type="submit" value="{{ $isUpdate ? 'Update' : 'Create' }}"
+                <input type="submit" value="{{ $product ? 'Update' : 'Create' }}"
                     class="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
             </div>
         </div>
     </form>
-@endsection --}}
+@endsection
+

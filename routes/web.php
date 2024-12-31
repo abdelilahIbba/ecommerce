@@ -9,3 +9,5 @@ Route::get('/', function () {
 
 Route::resource('Product', ProductController::class);
 
+
+

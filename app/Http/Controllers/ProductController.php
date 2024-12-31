@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
+// use App\Models\Product::file();
 
 class ProductController extends Controller
 {
@@ -25,10 +26,15 @@ class ProductController extends Controller
     public function create()
     {
         $product = new Product();
+        $product->file([
+            'quantity' => 0,
+        ]);        
+        $isUpdate = false;
         return view('product.form', compact(
-            'product'
+            'product', 'isUpdate'
         ));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -46,24 +52,6 @@ class ProductController extends Controller
             $formFields['image'] = $request->file('image')->store('product', 'public');
         }
         Product::create($formFields);
-        // return to_route('Product.index')->with('success', 'Product created successfully');
-        // $data = $request->validate([
-        //     'name' => 'required|min:5',
-        //     'description' => 'required|min:5',
-        //     'quantity' => 'required|numeric',
-        //        'image' => 'required|image',
-        //     'price' => 'required|numeric',
-        // ]);
-
-        // Save product
-        // $product = new Product();
-        // $product->name = $data['name'];
-        // $product->description = $data['description'];
-        // $product->quantity = $data['quantity'];
-        // $product->image = $request['image'];
-        // $product->price = $data['price'];
-        // $product->save();
-
         return redirect()->route('Product.index')->with('success', 'Product created successfully!');
     }
 
@@ -79,39 +67,48 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(product $product)
+    public function edit($id)
+
     {
-        $product = new Product();
-        return view('product.edit', compact('product'));
+        $product = Product::find($id);
+     
+        return view('product.edit',compact('product'));
     }
-    
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request,$id)
     {
-        //
+        $product = Product::find($id);    
+        // Update the product with the request data
+        $product->update($request->all());
+    
+        return redirect()->route('Product.index')->with('success', 'Product Updated successfully.');
     }
+    
+    
+    
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-{
-    // Find the product by ID
-    $product = Product::find($id);
+    {
+        // Find the product by ID
+        $product = Product::find($id);
 
-    // Check if the product exists
-    if (!$product) {
-        // If the product doesn't exist, redirect with an error message
-        return redirect()->route('Product.index')->with('error', 'Product not found.');
+        // Check if the product exists
+        if (!$product) {
+            // If the product doesn't exist, redirect with an error message
+            return redirect()->route('Product.index')->with('error', 'Product not found.');
+        }
+
+        // Attempt to delete the product
+        $product->delete();
+
+        // Redirect with success message after successful deletion
+        return redirect()->route('Product.index')->with('success', 'Product deleted successfully.');
     }
-
-    // Attempt to delete the product
-    $product->delete();
-
-    // Redirect with success message after successful deletion
-    return redirect()->route('Product.index')->with('success', 'Product deleted successfully.');
-}
 }
