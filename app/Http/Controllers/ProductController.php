@@ -2,113 +2,78 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
-// use App\Models\Product::file();
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $products = Product::all();
-        return view('product.index', compact(
-            'products'
-        ));
+        $products = Product::paginate(10);
+        return view('product.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $product = new Product();
-        $product->file([
-            'quantity' => 0,
-        ]);        
-        $isUpdate = false;
-        return view('product.form', compact(
-            'product', 'isUpdate'
-        ));
+        return view('product.form');
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $formFields = $request->validate([
+        $request->validate([
             'name' => 'required|min:5',
             'description' => 'required|min:5',
             'quantity' => 'required|numeric',
             'image' => 'required|image',
             'price' => 'required|numeric',
         ]);
-        if ($request->hasFile('image')) {
-            $formFields['image'] = $request->file('image')->store('product', 'public');
-        }
-        Product::create($formFields);
-        return redirect()->route('Product.index')->with('success', 'Product created successfully!');
+
+        $imagePath = $request->file('image')->store('product_images', 'public');
+
+        Product::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'quantity' => $request->quantity,
+            'image' => $imagePath,
+            'price' => $request->price,
+        ]);
+
+        return redirect()->route('products.index')->with('success', 'Product created successfully!');
     }
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Product $product)
     {
-        //
+        return view('product.show', compact('product'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-
+    public function edit(Product $product)
     {
-        $product = Product::find($id);
-     
-        return view('product.edit',compact('product'));
+        return view('product.form', compact('product'));
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request,$id)
+    public function update(Request $request, Product $product)
     {
-        $product = Product::find($id);    
-        // Update the product with the request data
-        $product->update($request->all());
-    
-        return redirect()->route('Product.index')->with('success', 'Product Updated successfully.');
-    }
-    
-    
-    
+        $request->validate([
+            'name' => 'required|min:5',
+            'description' => 'required|min:5',
+            'quantity' => 'required|numeric',
+            'image' => 'image',
+            'price' => 'required|numeric',
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        // Find the product by ID
-        $product = Product::find($id);
-
-        // Check if the product exists
-        if (!$product) {
-            // If the product doesn't exist, redirect with an error message
-            return redirect()->route('Product.index')->with('error', 'Product not found.');
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('product_images', 'public');
+            $product->image = $imagePath;
         }
 
-        // Attempt to delete the product
-        $product->delete();
+        $product->update($request->only(['name', 'description', 'quantity', 'price']));
 
-        // Redirect with success message after successful deletion
-        return redirect()->route('Product.index')->with('success', 'Product deleted successfully.');
+        return redirect()->route('products.index')->with('success', 'Product updated successfully!');
+    }
+
+    public function destroy(Product $product)
+    {
+        $product->delete();
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 }

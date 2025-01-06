@@ -5,7 +5,6 @@
 @section('content')
     <h2 class="text-3xl font-semibold mb-6">Product List</h2>
 
-    <!-- Product Table -->
     <div class="overflow-hidden shadow-xl rounded-lg">
         <table class="min-w-full bg-white">
             <thead>
@@ -27,24 +26,20 @@
                         <td class="px-6 py-4 text-sm text-gray-800">{{ $product->description }}</td>
                         <td class="px-6 py-4 text-sm text-gray-800">{{ $product->quantity }}</td>
                         <td class="px-6 py-4 text-sm text-gray-800">
-                            <img src="storage/{{ $product->image }}" alt="{{ $product->name }}"
+                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
                                 class="w-16 h-16 object-cover rounded-md">
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-800">{{ number_format($product->price, 2) }} MAD</td>
                         <td class="px-6 py-4 text-sm text-gray-800">
-                            <a href="{{ route('Product.edit', $product) }}"
-                                class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 focus:outline-none">
-                                Edit
-                            </a>
+                            <a href="{{ route('products.edit', $product) }}"
+                                class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600">Edit</a>
 
-                            <form method="POST" action="{{ route('Product.destroy', $product) }}">
+                            <form method="POST" action="{{ route('products.destroy', $product) }}" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
                                 <input type="submit" value="Delete"
-                                    class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 focus:outline-none ml-2">
+                                    class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 ml-2">
                             </form>
-
-
                         </td>
                     </tr>
                 @empty
@@ -54,5 +49,9 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    <div class="mt-4">
+        {{ $products->links() }}
     </div>
 @endsection
